@@ -140,6 +140,23 @@ def test_equality_inequality(str_expr, msgs, str_expected, fail_msg):
         ("PrimeQ[f[2]]", None, "False", None),
         ("MatchQ[f[2], _?EvenQ]", None, "False", None),
         ("Cases[{2, f[2], 3}, _?OddQ]", None, "{3}", None),
+        # Real infinities
+        ("{Negative[Infinity], Negative[-Infinity]}", None, "{False, True}", None),
+        ("{Positive[Infinity], Positive[-Infinity]}", None, "{True, False}", None),
+        (
+            "{NonNegative[Infinity], NonNegative[-Infinity]}",
+            None,
+            "{True, False}",
+            None,
+        ),
+        (
+            "{NonPositive[Infinity], NonPositive[-Infinity]}",
+            None,
+            "{False, True}",
+            None,
+        ),
+        ("Negative[2 {Infinity, 3} - {3, 0}]", None, "{False, False}", None),
+        ("Negative[ComplexInfinity]", None, "Negative[ComplexInfinity]", None),
     ],
 )
 def test_numerical_properties(str_expr, msgs, str_expected, fail_msg):
