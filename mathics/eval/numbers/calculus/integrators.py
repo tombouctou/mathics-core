@@ -179,11 +179,11 @@ def eval_D_to_Integral(func, domain, var, evaluation, options, head):
     else:
         # It would be better to set those options that are not default...
         options = tuple()
-    # if the integration is along several variables, take the integration of the inner
-    # variables as func.
+    # If the integration is along several variables, take the integration
+    # over the inner ones, which come last, as func.
     if domain.has_form(SymbolSequence, None):
-        func = Expression(head, func, *(domain.elements[:-1]), *options)
-        domain = domain.elements[-1]
+        func = Expression(head, func, *(domain.elements[1:]), *options)
+        domain = domain.elements[0]
 
     # An indefinite integral, Integrate[func, x]: its derivative in x is
     # func, and in any other variable it is the integral of the

@@ -1000,6 +1000,11 @@ class Integrate(SympyFunction):
     >> Integrate[Sin[x], {x, 0, Pi/2}]
      = 1
 
+    In a multiple integral the last variable is integrated first, so its \
+    limits may depend on the others:
+    >> Integrate[x y, {x, 0, 1}, {y, 0, x}]
+     = 1 / 8
+
     Some other integrals:
     >> Integrate[1 / (1 - 4 x + x^2), x]
      = Sqrt[3] (Log[-2 - Sqrt[3] + x] - Log[-2 + Sqrt[3] + x]) / 6
@@ -1088,7 +1093,8 @@ class Integrate(SympyFunction):
                 args.append(element.elements[0])
             else:
                 args.append(element)
-        new_elements = [elements[0]] + args
+        # SymPy lists the innermost integral first, WMA last.
+        new_elements = [elements[0]] + args[::-1]
         return Expression(Symbol(self.get_name()), *new_elements)
 
     def eval(self, f, xs, evaluation: Evaluation, options: dict):  # type: ignore[override]
@@ -1127,6 +1133,10 @@ class Integrate(SympyFunction):
                 vars.append(x)
             else:
                 vars.append((x, a, b))
+        # In Integrate[f, {x, ...}, {y, ...}] the integral over y is done
+        # first (its limits may depend on x); sympy.integrate does the
+        # first variable it is given first.
+        vars.reverse()
         try:
             sympy_result = tracing.run_sympy(sympy.integrate, f_sympy, *vars)
             pass

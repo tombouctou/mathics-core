@@ -86,6 +86,12 @@ else:
 tests_for_integrate = [
     (r"Integrate[Sec[x]*Tan[x],x]", "1 / Cos[x]", "issue #346"),
     (r"Integrate[Sin[x]/(3 + Cos[x])^2,x]", "1 / (3 + Cos[x])", "issue #346"),
+    # In a multiple integral the last variable is integrated first.
+    (r"Integrate[1, {x, 0, 1}, {y, 0, x}]", "1 / 2", "area of a triangle"),
+    (r"Integrate[x y, {x, 0, 1}, {y, 0, x}]", "1 / 8", "inner integral over y"),
+    (r"Integrate[x, {x, 0, y}, {y, 0, 1}]", "y ^ 2 / 2", "inner integral over y"),
+    (r"Integrate[1, {x, 0, 1}, {y, 0, x}, {z, 0, y}]", "1 / 6", "simplex"),
+    (r"D[Integrate[f[x, y], x, y], x]", "Integrate[f[x, y], y]", "outer variable"),
 ]
 
 
