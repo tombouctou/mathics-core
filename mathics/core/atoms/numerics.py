@@ -33,6 +33,7 @@ from mathics.core.number import (
     MAX_MACHINE_NUMBER,
     MIN_STORED_BITS,
     MIN_MACHINE_NUMBER,
+    MIN_STORED_BITS,
     dps,
     min_prec,
     prec,
