@@ -615,6 +615,7 @@ class Cos(MPMathFunction):
     """
 
     mpmath_name = "cos"
+    value_bound = 1.0
 
     @staticmethod
     def condition_numbers(x: mpmath.mpf, value: mpmath.mpf) -> tuple[mpmath.mpf]:
@@ -657,6 +658,7 @@ class Cot(MPMathFunction):
     """
 
     mpmath_name = "cot"
+    has_poles = True
 
     @staticmethod
     def condition_numbers(x: mpmath.mpf, value: mpmath.mpf) -> tuple[mpmath.mpf]:
@@ -699,6 +701,7 @@ class Csc(MPMathFunction):
     """
 
     mpmath_name = "csc"
+    has_poles = True
 
     @staticmethod
     def condition_numbers(x: mpmath.mpf, value: mpmath.mpf) -> tuple[mpmath.mpf]:
@@ -791,6 +794,7 @@ class Sec(MPMathFunction):
     """
 
     mpmath_name = "sec"
+    has_poles = True
 
     @staticmethod
     def condition_numbers(x: mpmath.mpf, value: mpmath.mpf) -> tuple[mpmath.mpf]:
@@ -842,6 +846,7 @@ class Sin(MPMathFunction):
     """
 
     mpmath_name = "sin"
+    value_bound = 1.0
 
     @staticmethod
     def condition_numbers(x: mpmath.mpf, value: mpmath.mpf) -> tuple[mpmath.mpf]:
@@ -883,6 +888,7 @@ class Tan(MPMathFunction):
     """
 
     mpmath_name = "tan"
+    has_poles = True
 
     @staticmethod
     def condition_numbers(x: mpmath.mpf, value: mpmath.mpf) -> tuple[mpmath.mpf]:

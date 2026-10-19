@@ -579,6 +579,14 @@ def test_trig_real_valued_precision(str_expr, str_expected, msg):
         ("Csc[0.]", "ComplexInfinity", None),
         ("Cot[0``20]", "ComplexInfinity", None),
         ("Csc[0``20]", "ComplexInfinity", None),
+        ("Tan[N[Pi/2, 20]]", "ComplexInfinity", "no digit left next to a pole"),
+        ("Sec[N[Pi/2, 20]]", "ComplexInfinity", None),
+        ("Cot[N[Pi, 20]]", "ComplexInfinity", None),
+        ("Csc[N[Pi, 20]]", "ComplexInfinity", None),
+        ("Tan[1.5707963`5]", "ComplexInfinity", None),
+        ("Precision[Tan[N[Pi/2, 20] + 10^-15]]", "4.80388", "close to a pole"),
+        ("Accuracy[Sin[1.`20*^30]]", "0.", "the error is at most the bound 1"),
+        ("Accuracy[Cos[1.`20*^30]]", "0.", None),
     ],
 )
 def test_trig_zero(str_expr, str_expected, msg):
@@ -609,6 +617,22 @@ def test_trig_zero(str_expr, str_expected, msg):
         ("Accuracy[ArcTan[0``20]]", "20.", None),
         ("Precision[ArcCos[0``20]]", "20.1961", None),
         ("Precision[ArcCot[0``20]]", "20.1961", "ArcCot jumps at 0"),
+        ("ArcSin[0`20]", "0", "0`20 is an exact 0"),
+        ("Precision[ArcSin[0.0`20]]", "MachinePrecision", "0.0`20 is 0."),
+        ("Accuracy[ArcCos[1.`20]]", "9.84949", "ArcCos changes by Sqrt[2 10^-20]"),
+        ("Accuracy[ArcSec[1.`20]]", "9.84949", None),
+        ("Accuracy[ArcCos[1.`5]]", "2.34948", None),
+        ("Precision[ArcSec[-1.`20]]", "10.3466", None),
+        ("Precision[ArcCos[0.99999999`20]]", "12.301", "next to the end"),
+        ("Precision[ArcSin[0.99999999`20]]", "16.3466", None),
+        ("Precision[ArcSec[1.00000001`20]]", "12.301", None),
+        ("Precision[ArcSin[0.9999999999999999999`20]]", "10.8465", None),
+        (
+            "Precision[ArcSin[1.`20]]",
+            "10.0456",
+            "WMA gives 20.1961 here, but 10.8465 just below 1",
+        ),
+        ("Precision[ArcCsc[1.`20]]", "10.0456", None),
     ],
 )
 def test_arctrig_real_valued_precision(str_expr, str_expected, msg):
@@ -654,6 +678,14 @@ def test_arctrig_real_valued_precision(str_expr, str_expected, msg):
         ("Coth[0``20]", "ComplexInfinity", "a pole"),
         ("Csch[0.]", "ComplexInfinity", None),
         ("Csch[0``20]", "ComplexInfinity", None),
+        ("Sinh[0`20]", "0", "0`20 is an exact 0"),
+        ("Precision[Cosh[0.0`20]]", "MachinePrecision", "0.0`20 is 0."),
+        ("Accuracy[ArcCosh[1.`20]]", "9.84949", "at the end of the domain"),
+        ("Accuracy[ArcSech[1.`20]]", "9.84949", None),
+        ("Precision[ArcCosh[1.00000001`20]]", "12.301", "next to the end"),
+        ("Precision[ArcSech[0.99999999`20]]", "12.301", None),
+        ("Precision[ArcTanh[0.99999999`20]]", "13.2813", "next to a pole"),
+        ("Accuracy[Sinh[1000.`2]]", "-434.993", "no digit left, no bound"),
     ],
 )
 def test_hyperbolic_real_valued_precision(str_expr, str_expected, msg):
