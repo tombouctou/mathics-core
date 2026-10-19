@@ -664,6 +664,7 @@ class Cot(MPMathFunction):
 
     rules = {
         "Cot[0]": "ComplexInfinity",
+        "Cot[z_Real /; z == 0]": "ComplexInfinity",
         "Cot[Undefined]": "Undefined",
         "Derivative[1][Cot]": "-Csc[#]^2&",
     }
@@ -705,6 +706,7 @@ class Csc(MPMathFunction):
 
     rules = {
         "Csc[0]": "ComplexInfinity",
+        "Csc[z_Real /; z == 0]": "ComplexInfinity",
         "Csc[Undefined]": "Undefined",
         "Derivative[1][Csc]": "-Cot[#] Csc[#]&",
     }

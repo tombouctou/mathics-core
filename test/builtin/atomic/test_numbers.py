@@ -562,6 +562,33 @@ def test_trig_real_valued_precision(str_expr, str_expected, msg):
 @pytest.mark.parametrize(
     ("str_expr", "str_expected", "msg"),
     [
+        ("Precision[Sin[0]]", "Infinity", "an exact zero stays exact"),
+        ("Precision[Cos[0]]", "Infinity", None),
+        ("Precision[Tan[0]]", "Infinity", None),
+        ("Precision[Sin[Pi]]", "Infinity", None),
+        ("Accuracy[Sin[N[Pi, 20]]]", "19.5029", "a zero result keeps an accuracy"),
+        ("Accuracy[Cos[N[Pi/2, 20]]]", "19.8039", None),
+        ("Accuracy[Sin[2 N[Pi, 20]]]", "19.2018", None),
+        ("Accuracy[Sin[0``20]]", "20.", "the absolute error of a zero"),
+        ("Accuracy[Tan[0``20]]", "20.", None),
+        ("Accuracy[Sin[0``5.5]]", "5.5", None),
+        ("Precision[Cos[0``20]]", "40.301", "Cos changes to second order"),
+        ("Precision[Sec[0``20]]", "40.301", None),
+        ("Precision[Cos[0``5]]", "10.301", None),
+        ("Cot[0.]", "ComplexInfinity", "a pole"),
+        ("Csc[0.]", "ComplexInfinity", None),
+        ("Cot[0``20]", "ComplexInfinity", None),
+        ("Csc[0``20]", "ComplexInfinity", None),
+    ],
+)
+def test_trig_zero(str_expr, str_expected, msg):
+    """Compared with WMA 15"""
+    check_evaluation(str_expr, str_expected, failure_message=msg)
+
+
+@pytest.mark.parametrize(
+    ("str_expr", "str_expected", "msg"),
+    [
         ("Precision[ArcSin[0.3`20]]", "19.9863", None),
         ("Precision[ArcSin[0.99`20]]", "19.3089", "near 1, ArcSin loses digits"),
         ("Precision[ArcCos[0.3`20]]", "20.6049", None),
@@ -577,6 +604,11 @@ def test_trig_real_valued_precision(str_expr, str_expected, msg):
         ("Precision[ArcCsc[-25.`20]]", "19.9998", None),
         ("Precision[ArcTan[1.5`20, 2.5`20]]", "20.0674", "ArcTan[x, y]"),
         ("Precision[ArcTan[-1.5`20, 2.5`30]]", "20.6799", None),
+        ("Precision[ArcSin[0]]", "Infinity", "an exact zero stays exact"),
+        ("Accuracy[ArcSin[0``20]]", "20.", "the absolute error of a zero"),
+        ("Accuracy[ArcTan[0``20]]", "20.", None),
+        ("Precision[ArcCos[0``20]]", "20.1961", None),
+        ("Precision[ArcCot[0``20]]", "20.1961", "ArcCot jumps at 0"),
     ],
 )
 def test_arctrig_real_valued_precision(str_expr, str_expected, msg):
@@ -612,6 +644,16 @@ def test_arctrig_real_valued_precision(str_expr, str_expected, msg):
         ("Precision[ArcSech[0.99`20]]", "18.3018", None),
         ("Precision[ArcCsch[0.3`20]]", "20.3018", None),
         ("Precision[ArcCsch[-25.`20]]", "20.0002", None),
+        ("Precision[Sinh[0]]", "Infinity", "an exact zero stays exact"),
+        ("Accuracy[Sinh[0``20]]", "20.", "the absolute error of a zero"),
+        ("Accuracy[Tanh[0``20]]", "20.", None),
+        ("Accuracy[ArcSinh[0``20]]", "20.", None),
+        ("Accuracy[ArcTanh[0``20]]", "20.", None),
+        ("Precision[Cosh[0``20]]", "40.301", "Cosh changes to second order"),
+        ("Precision[Sech[0``20]]", "40.301", None),
+        ("Coth[0``20]", "ComplexInfinity", "a pole"),
+        ("Csch[0.]", "ComplexInfinity", None),
+        ("Csch[0``20]", "ComplexInfinity", None),
     ],
 )
 def test_hyperbolic_real_valued_precision(str_expr, str_expected, msg):
