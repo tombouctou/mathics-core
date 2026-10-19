@@ -31,7 +31,6 @@ from mathics.core.number import (
     FP_MANTISA_BINARY_DIGITS,
     LOG2_10,
     MAX_MACHINE_NUMBER,
-    MIN_STORED_BITS,
     MIN_MACHINE_NUMBER,
     MIN_STORED_BITS,
     dps,
