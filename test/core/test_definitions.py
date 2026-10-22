@@ -252,6 +252,18 @@ def test_insert_rule_compares_few_rules(monkeypatch):
         ),
         ("ClearAll[f]; f[1]", "f[1]", "Cleared"),
         (
+            "Do[f[i] = i, {i, 20}]; f[x_] := gen[x]; {f[1], f[2], f[21]}",
+            "{1, 2, gen[21]}",
+            "Stored values assigned before a pattern rule",
+        ),
+        (
+            "ClearAll[f]; f[x_] := gen[x]; Do[f[i] = i, {i, 20}]; f[2] = two;"
+            " {f[1], f[2], f[21]}",
+            "{1, two, gen[21]}",
+            "Stored values assigned after a pattern rule",
+        ),
+        ("ClearAll[f]; f[1]", "f[1]", "Cleared again"),
+        (
             "Do[g[k][i] = -i, {i, 20}]; g[k][x_] := other[x]; {g[k][3], g[k][30]}",
             "{-3, other[30]}",
             "SubValues",
