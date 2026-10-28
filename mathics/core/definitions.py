@@ -213,60 +213,6 @@ class Definition:
         self.rule_index[rule_list_name] = (values, index)
         return index
 
-    def get_rules_for(
-        self, rule_list_name: str, expression: BaseElement
-    ) -> Iterable[BaseRule]:
-        """
-        Return, in the order they are to be tried, the rules of the list
-        `rule_list_name` that may apply to `expression`. Rules whose
-        left-hand side is a literal expression (stored values such as
-        f[1] = a) are found through an index (see ``LiteralRuleIndex``);
-        only the one that is SameQ to `expression`, if any, is returned
-        among them.
-        """
-        values = self.get_values_list(rule_list_name)
-        if len(values) < LITERAL_INDEX_MIN_RULES:
-            return values
-        index = self._get_literal_index(rule_list_name, values)
-        if index is None:
-            return values
-        return index.rules_for(expression)
-
-    def _get_literal_index(
-        self, rule_list_name: str, values: List[BaseRule]
-    ) -> Optional["LiteralRuleIndex"]:
-        """
-        The literal index of `values`, the rule list `rule_list_name`,
-        built when first needed. None when the list can not be indexed.
-        """
-        cache = self.__dict__.setdefault("literal_index", {})
-        entry = cache.get(rule_list_name)
-        if entry is not None and entry[0] is values:
-            return entry[1]
-        index = LiteralRuleIndex.build(values)
-        cache[rule_list_name] = (values, index)
-        return index
-
-    def _update_literal_index(
-        self,
-        rule_list_name: str,
-        values: List[BaseRule],
-        rule: BaseRule,
-        replaced: bool,
-    ) -> None:
-        """
-        Keep the literal index of `values` right after `rule` was inserted;
-        `replaced` tells whether it took the place of an existing rule.
-        """
-        cache = self.__dict__.get("literal_index")
-        if not cache or rule_list_name not in cache:
-            return
-        values_indexed, index = cache[rule_list_name]
-        if values_indexed is not values or index is None:
-            return
-        if not (is_literal_rule(rule) and index.add(rule, replaced)):
-            del cache[rule_list_name]
-
     def get_values_list(self, rule_list_name: str) -> list[BaseRule]:
         """Return a Rule value lists"""
         assert hasattr(self, rule_list_name)
