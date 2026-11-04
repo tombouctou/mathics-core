@@ -475,7 +475,11 @@ def test_extract_arg_errors():
 @pytest.mark.parametrize(
     ("str_expr", "expected_messages", "str_expected"),
     [
-        ("pa = Range[8]; pa[[{2, 5, 6}]] = {-1, -2, -3}; pa", None, "{1, -1, 3, 4, -2, -3, 7, 8}"),
+        (
+            "pa = Range[8]; pa[[{2, 5, 6}]] = {-1, -2, -3}; pa",
+            None,
+            "{1, -1, 3, 4, -2, -3, 7, 8}",
+        ),
         ("pa = Range[8]; pa[[{2, 3}]] = 0; pa", None, "{1, 0, 0, 4, 5, 6, 7, 8}"),
         ("pa = Range[8]; pa[[{-1, 1}]] = {p, q}; pa", None, "{q, 2, 3, 4, 5, 6, 7, p}"),
         # A right side of another length is assigned to each part whole.
@@ -489,8 +493,16 @@ def test_extract_arg_errors():
         ("pa = Range[3]; pa[[-1]] = z; pa", None, "{1, 2, z}"),
         ("pm = {{1, 2}, {3, 4}}; pm[[All, 1]] = {a, b}; pm", None, "{{a, 2}, {b, 4}}"),
         ("pm = {{1, 2}, {3, 4}}; pm[[All, 1]] = z; pm", None, "{{z, 2}, {z, 4}}"),
-        ("pm = {{1, 2}, {3, 4}}; pm[[{1, 2}, 2]] = {pax, pay}; pm", None, "{{1, pax}, {3, pay}}"),
-        ("pm = {{1, 2}, {3, 4}}; pm[[2, All]] = {pax, pay}; pm", None, "{{1, 2}, {pax, pay}}"),
+        (
+            "pm = {{1, 2}, {3, 4}}; pm[[{1, 2}, 2]] = {pax, pay}; pm",
+            None,
+            "{{1, pax}, {3, pay}}",
+        ),
+        (
+            "pm = {{1, 2}, {3, 4}}; pm[[2, All]] = {pax, pay}; pm",
+            None,
+            "{{1, 2}, {pax, pay}}",
+        ),
         (
             "pm = {{1, 2}, {3, 4}}; pm[[{2, 1}, {1}]] = {{a}, {b}}; pm",
             None,
@@ -509,6 +521,18 @@ def test_extract_arg_errors():
             ("Part 4 of {1, 2, 3} does not exist.",),
             "{1, 2, 3}",
         ),
+        # A negative position never reaches the head at position 0.
+        (
+            "pa = {1, 2, 3}; pa[[-4]] = 0; pa",
+            ("Part -4 of {1, 2, 3} does not exist.",),
+            "{1, 2, 3}",
+        ),
+        (
+            "pa = {1, 2, 3}; pa[[{-4, 2}]] = {pax, pay}; pa",
+            ("Part -4 of {1, 2, 3} does not exist.",),
+            "{1, 2, 3}",
+        ),
+        ("pa = {1, 2, 3}; pa[[-3]] = pax; pa", None, "{pax, 2, 3}"),
         ("pl = {1, 2, 3}; pl[[0]] = pf; pl", None, "pf[1, 2, 3]"),
         ("pm = {{1, 2}, {3, 4}}; pm[[2, 0]] = phg; pm", None, "{{1, 2}, phg[3, 4]}"),
         ("pm = {{1, 2}, {3, 4}}; pm[[All, 0]] = ph; pm", None, "{ph[1, 2], ph[3, 4]}"),
@@ -523,15 +547,27 @@ def test_extract_arg_errors():
             ("Part 5 of {1, 2} does not exist.",),
             "{{1, 2}, {3, 4}}",
         ),
-        ("pm = {{1, 2}, {3, 4}, {5, 6}}; pm[[-2 ;; -1, 2]] = 0; pm", None, "{{1, 2}, {3, 0}, {5, 0}}"),
+        (
+            "pm = {{1, 2}, {3, 4}, {5, 6}}; pm[[-2 ;; -1, 2]] = 0; pm",
+            None,
+            "{{1, 2}, {3, 0}, {5, 0}}",
+        ),
         ("pa = Range[5]; pa[[-1 ;; 1 ;; -2]] = 0; pa", None, "{0, 2, 0, 4, 0}"),
         ("pa = Range[5]; pa[[4 ;; 2 ;; -1]] = {u, v, w}; pa", None, "{1, w, v, u, 5}"),
         # A part assigned a symbol is evaluated again once the symbol has a value.
-        ("ClearAll[psx]; pa = {1, 2, 3}; pa[[2]] = psx; psx = 5; pa", None, "{1, 5, 3}"),
+        (
+            "ClearAll[psx]; pa = {1, 2, 3}; pa[[2]] = psx; psx = 5; pa",
+            None,
+            "{1, 5, 3}",
+        ),
         ("pa = {1, 2}; pa[[1]] = Sequence[pu, pv]; pa", None, "{pu, pv, 2}"),
         ("pa = {pu, 2}; pa[[1]] = 7; {pa, Total[pa]}", None, "{{7, 2}, 9}"),
         # The value assigned to may be shared: only the variable changes.
-        ("pa = {1, {2}}; pb = pa; pb[[2, 1]] = 9; {pa, pb}", None, "{{1, {2}}, {1, {9}}}"),
+        (
+            "pa = {1, {2}}; pb = pa; pb[[2, 1]] = 9; {pa, pb}",
+            None,
+            "{{1, {2}}, {1, {9}}}",
+        ),
         (
             "pa = {{1, 2}, {3, 4}}; pb = pa; pb[[All, 1]] = 0; {pa, pb}",
             None,

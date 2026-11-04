@@ -72,7 +72,6 @@ import pytest
             "$Aborted",
             None,
         ),
-        ("ClearAll[f];", None, None, None),
         # $IterationLimit bounds one chain of rewrites, not the number of
         # times symbols are looked up during the whole evaluation.
         (
@@ -105,7 +104,6 @@ import pytest
             "15",
             None,
         ),
-        ("ClearAll[f];", None, None, None),
         # Release, the obsolete form of Evaluate
         ("x = 1 + 1; Release[x]", None, "2", None),
         (
