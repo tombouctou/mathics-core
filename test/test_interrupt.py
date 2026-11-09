@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Ctrl-C while an evaluation runs on its own thread (see
 Evaluation._evaluate_on_thread).
@@ -19,7 +18,6 @@ import pytest
 
 from mathics.core import evaluation as core_evaluation
 from mathics.session import MathicsSession
-
 
 # ---- unit tests ---------------------------------------------------------------
 
@@ -159,9 +157,11 @@ class Terminal:
 
     def close(self):
         self.proc.kill()
-        self.proc.wait()
+        # On macOS a killed process cannot finish exiting while output it
+        # wrote to the terminal is unread, so close the terminal first.
         os.close(self.fd)
         os.close(self.child)
+        self.proc.wait(timeout=30)
 
 
 @pytest.fixture
