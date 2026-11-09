@@ -24,10 +24,10 @@ DEBUG_PRINT = False
 
 # Maximum recursion depth is safe for all Python environments
 # without setting a custom thread stack size.
-DEFAULT_MAX_RECURSION_DEPTH = 512
+DEFAULT_MAX_RECURSION_DEPTH = 1024
 
 # How deep $RecursionLimit = Infinity, as in Block[{$RecursionLimit = Infinity}, ...],
-# lets an evaluation go. It is not bounded by the 512 above because an
+# lets an evaluation go. It is not bounded by the maximum above because an
 # evaluation runs on a thread with a stack sized for it (see
 # mathics.core.evaluation), or on a Python that checks its own C recursion.
 DEFAULT_MAX_INFINITE_RECURSION_DEPTH = 100000
