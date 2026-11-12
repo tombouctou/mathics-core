@@ -250,6 +250,23 @@ def test_timeconstrained_inside_matching():
         session.evaluate("ClearAll[f, slow]")
 
 
+def test_evaluate_timeout_restores_state():
+    """A timeout inside Plot, which turns messages off while it samples, and
+    inside the formatting of its result, gives General::timeout and leaves
+    neither the session quiet nor boxing."""
+    from test.helper import session
+
+    result = session.evaluate_as_in_cli(
+        "Plot[(Do[k, {k, 10^4}]; x), {x, 0, 1}]", timeout=0.3
+    )
+    assert result.result == "$Aborted"
+    assert [m.text for m in result.out] == ["Timeout reached."]
+    assert session.evaluation.quiet_all is False
+    assert session.evaluation.is_boxing is False
+    result = session.evaluate_as_in_cli("1/0")
+    assert [m.text for m in result.out] == ["Infinite expression 1 / 0 encountered."]
+
+
 def test_infinite_recursion_limit(monkeypatch):
     """$RecursionLimit = Infinity goes as deep as MAX_INFINITE_RECURSION_DEPTH,
     then stops, and the message gives the limit in effect inside the Block."""
